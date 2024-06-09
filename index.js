@@ -9,14 +9,14 @@ const httpServer = createServer((req, res) => {
   res.end('socket io and redis\n');
 });
 
-// setInterval(() => {
-//   fetch('https://socket-backend-latest-ju6v.onrender.com').then(() => {
-//     console.log('Alive ⚓');
-//   })
-//     .catch((error) => {
-//       console.log(error);
-//     });
-// }, 1000 * 60 * 5); // millisecond * second * minute //
+setInterval(() => {
+  fetch('https://socket-backend-latest-ju6v.onrender.com').then(() => {
+    console.log('Alive ⚓');
+  })
+    .catch((error) => {
+      console.log(error);
+    });
+}, 1000 * 60 * 5); // millisecond * second * minute //
 
 const socketIO = new Server(httpServer, {
   cors: {
@@ -27,6 +27,7 @@ const socketIO = new Server(httpServer, {
 // socket io
 socketIO.on('connection', (socket) => {
 
+  console.log("New User Connected")
   socket.emit('connection', socket.id)
 
   socket.on('user-connect', async (data) => {
