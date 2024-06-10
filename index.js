@@ -1,38 +1,29 @@
-const { createServer } = require('http');
-const { Server } = require('socket.io');
+const express = require('express');
+const http = require('http');
+const app = express();
 const Redis = require('ioredis');
 
+const server = http.createServer(app);
+const { Server } = require("socket.io");
 const redisConnection = new Redis('rediss://default:AVNS_m2w_dcCClYxLc-zo9wR@redis-30cb8bb2-skysolo007.a.aivencloud.com:28574')
+const socketIO = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+})
 
-const httpServer = createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('socket io and redis\n');
-});
 
 setInterval(() => {
-  fetch('https://socket-backend-latest-ju6v.onrender.com').then(() => {
+  fetch('https://socket-s1.skysolo.me').then(() => {
     console.log('Alive ⚓');
-    redisConnection.publish("test", "test")
   })
     .catch((error) => {
       console.log(error);
     });
 }, 1000 * 60 * 5); // millisecond * second * minute //
 
-setInterval(() => {
-  redisConnection.publish("test", "test")
-}, 10000); // millisecond * second * minute //
-
-const socketIO = new Server(httpServer, {
-  cors: {
-    origin: true
-  },
-})
-
 // socket io
 socketIO.on('connection', (socket) => {
-
-  socket.emit('connection', socket.id)
 
   socket.on('user-connect', async (data) => {
     try {
@@ -87,6 +78,10 @@ sub.on("message", async (channel, message) => {
   }
 })
 
-httpServer.listen({ port: 4000 }, () => {
-  console.log(`🚀 Server ready at http://localhost:4000`)
+app.get('/', (req, res) => {
+  res.send('socket-s1 server is running 🚀')
+})
+
+server.listen(4000, () => {
+  console.log('Server is running on http://localhost:4000 🚀');
 });
